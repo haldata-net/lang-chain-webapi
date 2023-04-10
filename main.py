@@ -17,7 +17,7 @@ def run(request):
     req_json = request.get_json()
     if "message" in req_json:
         try:
-            result = agent.run(req_json["message"])
+            result = agent.run(req_json["message"], config["lang-chain"]["max-retry-count"])
             response = {
                 "result": result
             }

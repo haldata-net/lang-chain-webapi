@@ -1,6 +1,8 @@
+import logging
 from langchain.tools import AIPluginTool
 from langchain.chat_models import ChatOpenAI
 from langchain.agents import load_tools, initialize_agent
+from openai.error import InvalidRequestError
 
 
 class LangChain:
@@ -20,5 +22,18 @@ class LangChain:
         self.agent = initialize_agent(tools, ChatOpenAI(temperature=0), agent=agent, verbose=True)
         return self
 
-    def run(self, text):
-        return self.agent.run(text)
+    def run(self, text, max_retry_count=3):
+        retry_count = 0
+        for i in range(max_retry_count):
+            try:
+                return self.agent.run(text)
+            except InvalidRequestError as e:
+                logging.warning(f"agent run error: {e.error['message']}")
+                if retry_count + 1 == max_retry_count:
+                    raise e
+            except Exception as e:
+                logging.warning(f"agent run error: {str(e)}")
+                if retry_count + 1 == max_retry_count:
+                    raise e
+            logging.info("agent run retry.")
+            retry_count += 1
