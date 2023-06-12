@@ -1,0 +1,9 @@
+open-ai:
+  # 利用するAPIキーを設定する
+  api-key: sk-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV
+lang-chain:
+  # 必要に応じてここにプラグインを追加する
+  api-plugins:
+    - https://www.klarna.com/.well-known/ai-plugin.json
+  agent: zero-shot-react-description
+  max-retry-count: 3
